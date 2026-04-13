@@ -1,0 +1,9 @@
+[submodule "packages/lam/backend"]
+	path = packages/lam/backend
+	url = git@github.com:FunnyPaper/LAM-Backend.git
+[submodule "packages/lam/frontend"]
+	path = packages/lam/frontend
+	url = git@github.com:FunnyPaper/LAM-Frontend.git
+[submodule "packages/gscrap/service"]
+	path = packages/gscrap/service
+	url = git@github.com:FunnyPaper/GScrapService.git
