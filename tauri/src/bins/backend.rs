@@ -34,7 +34,9 @@ pub fn create_backend_process(shell: &Shell<Wry>, resource_dir: &PathBuf, grpc_p
             "--ack-host",
             "127.0.0.1",
             "--ack-port",
-            ack_port
+            ack_port,
+            "--origin",
+            "http://localhost:1420" // Could be derived from tauri configuration
         ]
     )
 }

@@ -1,7 +1,13 @@
 {
+    "rust-analyzer.server.extraEnv": {
+        "CARGO_TARET_DIR": "${workspaceFolder}/tauri/target/analyzer"
+    },
     "rust-analyzer.cargo.features": [],
+    "rust-analyzer.cargo.targetDir": "${workspaceFolder}/tauri/target/analyzer",
     "rust-analyzer.cargo.buildScripts.enable": false,
-    "rust-analyzer.linkedProjects": ["./tauri/Cargo.toml"],
+    "rust-analyzer.linkedProjects": [
+        "./tauri/Cargo.toml"
+    ],
     "files.watcherExclude": {
         ".git/objects/**": true,
         ".git/subtree-cache/**": true,

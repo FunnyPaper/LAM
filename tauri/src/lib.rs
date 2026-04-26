@@ -1,17 +1,18 @@
 mod bins;
 mod utils;
+mod commands;
 
 use core::panic;
 use std::{sync::{Arc, Mutex}};
 
 use tauri::{AppHandle, Manager, RunEvent, State};
 use tauri_plugin_shell::ShellExt;
-use tokio::{io::AsyncReadExt, net::TcpListener};
+use tokio::{io::{AsyncReadExt, AsyncWriteExt}, net::TcpListener, sync::watch};
 use tokio_util::sync::CancellationToken;
 
-use crate::{bins::LAMProcess, utils::{LAMState, kill_all_processes}};
+use crate::{bins::LAMProcess, commands::initialize, utils::{AppStatus, LAMState, kill_all_processes}};
 
-async fn create_subprocesses(app: AppHandle) {
+async fn create_subprocesses(app: AppHandle, tx: watch::Sender<AppStatus>) {
     let state: State<LAMState> = app.state();
     let resource_dir = app
         .path()
@@ -30,6 +31,7 @@ async fn create_subprocesses(app: AppHandle) {
     let (mut socket1, _addr1) = listener.accept().await.expect("Could not accept socket 1.");
     let mut buf1 = [0; 1024];
     let n = socket1.read(&mut buf1).await.expect("Error reading process.");
+    let _ = socket1.shutdown().await;
     let grpc_port: String = String::from_utf8_lossy(&buf1[..n])
         .trim()
         .strip_prefix("PORT=")
@@ -46,12 +48,21 @@ async fn create_subprocesses(app: AppHandle) {
 
     let (mut socket2, _addr2) = listener.accept().await.expect("Could not accept socket 2.");
     let mut buf2 = [0; 1024];
-    socket2.read(&mut buf2).await.expect("Error reading process.");
+    let n = socket2.read(&mut buf2).await.expect("Error reading process.");
+    let _ = socket2.shutdown().await;
+    let backend_port: String = String::from_utf8_lossy(&buf2[..n])
+        .trim()
+        .strip_prefix("PORT=")
+        .unwrap()
+        .parse()
+        .unwrap();
 
     if let Ok(mut processes) = state.processes.lock() {
         processes.push(gscrap_process);
         processes.push(backend_proceess);
     };
+
+    let _ = tx.send(AppStatus::Ready(backend_port));
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -80,10 +91,13 @@ pub fn run() {
         default_panic_hook(info);
     }));
 
+    let (tx, rx) = watch::channel(AppStatus::Loading);
+
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
-        .manage(LAMState::new(processes.clone()))
+        .invoke_handler(tauri::generate_handler![initialize])
+        .manage(LAMState::new(processes.clone(), rx))
         .setup(move |app| {
             let app_handle = app.app_handle().clone();
             let token_for_task = token_for_setup.clone();
@@ -93,7 +107,7 @@ pub fn run() {
                     _ = token_for_task.cancelled() => {
                         println!("Create subprocess task has been cancelled.")
                     }
-                    _ = create_subprocesses(app_handle) => {
+                    _ = create_subprocesses(app_handle, tx) => {
                         println!("Created all subprocesses.")
                     }
                 }

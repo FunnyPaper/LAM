@@ -1,7 +1,7 @@
 {
     "name": "lam",
     "private": true,
-    "version": "0.1.0",
+    "version": "0.2.0",
     "workspaces": [
         "packages/lam/frontend"
     ],
@@ -12,8 +12,10 @@
         "tauri": "tauri",
         "install:backend": "npm --prefix ./packages/lam/backend install && npm --prefix ./packages/gscrap/service/packages/gscrap install && npm --prefix ./packages/gscrap/service install",
         "gen:proto": "npm --prefix ./packages/lam/backend run gen:proto && npm --prefix ./packages/gscrap/service run gen:proto",
-        "build:backend": "npm --prefix ./packages/lam/backend run build && npm --prefix ./packages/gscrap/service/packages/gscrap run build && npm --prefix ./packages/gscrap/service run build",
-        "build:frontend": "npm --prefix ./packages/lam/frontend install",
+        "build:services": "npm --prefix ./packages/gscrap/service/packages/gscrap run build && cd ./packages/gscrap/service && sh ./create-installer.sh",
+        "build:backend": "cd ./packages/lam/backend && sh ./create-installator.sh",
+        "build:frontend": "npm --prefix ./packages/lam/frontend run build",
+        "build:dependencies": "npm run build:services && npm run build:backend && npm run build:frontend && sh ./prep-subapps.sh",
         "prune:dev": "npm --prefix ./packages/lam/backend prune --omit=dev && npm --prefix ./packages/gscrap/service/packages/gscrap prune --omit=dev && npm --prefix ./packages/gscrap/service prune --omit=dev"
     },
     "dependencies": {
@@ -23,22 +25,27 @@
         "@lam/frontend": "workspace:*",
         "@mui/icons-material": "7.3.x",
         "@mui/material": "7.3.x",
+        "@tanstack/react-query": "^5.99.0",
         "@tauri-apps/api": "^2",
         "@tauri-apps/plugin-opener": "^2",
         "@tauri-apps/plugin-shell": "^2.3.5",
         "@xyflow/react": "12.10.x",
+        "axios": "^1.15.0",
         "class-validator": "0.14.x",
         "i18next": "25.8.x",
+        "qs": "^6.15.1",
         "react": "19.2.x",
         "react-dom": "19.2.x",
         "react-hook-form": "7.71.x",
         "react-i18next": "16.5.x",
         "react-router": "7.13.x",
         "sass": "1.97.x",
+        "socket.io-client": "^4.8.3",
         "zustand": "5.0.x"
     },
     "devDependencies": {
         "@tauri-apps/cli": "^2",
+        "@types/qs": "^6.15.0",
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
         "@vitejs/plugin-react": "^4.6.0",

@@ -1,14 +1,24 @@
 use std::sync::{Arc, Mutex};
 
+use tokio::sync::watch;
+
 use crate::bins::LAMProcess;
 
+#[derive(Clone)]
+pub enum AppStatus {
+    Loading,
+    Ready(String),
+    Error(String)
+}
+
 pub struct LAMState {
-    pub processes: Arc<Mutex<Vec<LAMProcess>>>
+    pub processes: Arc<Mutex<Vec<LAMProcess>>>,
+    pub status_rx: watch::Receiver<AppStatus>
 }
 
 impl LAMState {
-    pub fn new(mutex: Arc<Mutex<Vec<LAMProcess>>>) -> LAMState {
-        LAMState { processes: mutex }
+    pub fn new(mutex: Arc<Mutex<Vec<LAMProcess>>>, rx: watch::Receiver<AppStatus>) -> LAMState {
+        LAMState { processes: mutex, status_rx: rx }
     }
 }
 
