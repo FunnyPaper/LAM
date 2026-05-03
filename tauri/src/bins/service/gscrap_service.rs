@@ -16,6 +16,7 @@ pub fn create_gscrap_service_process(
 
     let gscrap_resource = resource_dir.join("bin").join("service").join("gscrap");
 
+    let cache_dir = gscrap_resource.join(".cache").join("puppeteer");
     let gscrap_bin = gscrap_resource.join("gscrap-service.exe");
     let gscrap_bin = transform_abstract_path(gscrap_bin.to_string_lossy().to_string());
 
@@ -28,6 +29,8 @@ pub fn create_gscrap_service_process(
             &transform_abstract_path(gscrap_resource.to_string_lossy().to_string()),
             "--app-dir",
             &transform_abstract_path(app_data_dir.to_string_lossy().to_string()),
+            "--cache-dir",
+            &transform_abstract_path(cache_dir.to_string_lossy().to_string()),
             "--allow",
             "127.0.0.1",
             "--node-port",
