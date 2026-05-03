@@ -46,7 +46,7 @@ export type GetAllScriptVersionDtoQueryParams = {
         content?: {
             engineVersion?: number;
         },
-        status: ScriptVersionStatusEnum;
+        status?: ScriptVersionStatusEnum;
         runId?: string;
     },
     pagination?: {

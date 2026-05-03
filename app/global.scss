@@ -11,6 +11,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  overscroll-behavior: none;
+}
+
 a {
   font-weight: 500;
   color: #ffffff;
@@ -63,4 +67,18 @@ h1 {
     color: rgba(255, 255, 255, 0.87);
     background-color: #242424;
   }
+}
+
+// Turn off default webview icons for password and text input fields
+
+input[type="password"]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+input::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
 }

@@ -1,7 +1,7 @@
 {
     "$schema": "https://schema.tauri.app/config/2",
     "productName": "lam",
-    "version": "0.1.0",
+    "version": "0.3.0",
     "identifier": "com.lam.dev",
     "build": {
         "beforeDevCommand": "npm run dev",
@@ -15,12 +15,22 @@
                 "title": "LAM",
                 "width": 800,
                 "height": 600,
-                "maximized": true
+                "maximized": true,
+                "decorations": false,
+                "shadow": false
             }
         ],
         "security": {
             "csp": null
         }
+    },
+    "plugins": {
+      "updater": {
+        "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDNDOUIzMjYzMkFFQUI4NzQKUldSMHVPb3FZektiUEpuVllKcWhDYVlRZEJUSnQyU2h6SjNwR243UGE5UU1GT2ZIaU02MW1RZ0MK",
+        "endpoints": [
+          "https://github.com/FunnyPaper/LAM/releases/latest/download/latest.json"
+        ]
+      }
     },
     "bundle": {
         "active": true,
@@ -35,6 +45,7 @@
         "resources": [
             "bin/backend/**/*",
             "bin/service/gscrap/**/*"
-        ]
+        ],
+        "createUpdaterArtifacts": true
     }
 }

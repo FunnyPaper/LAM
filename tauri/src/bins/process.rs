@@ -1,23 +1,21 @@
 use std::ffi::OsStr;
 
 use tauri::Wry;
-use tauri_plugin_shell::{Shell, process::{CommandChild, CommandEvent}};
+use tauri_plugin_shell::{
+    process::{CommandChild, CommandEvent},
+    Shell,
+};
 
 pub struct LAMProcess {
     pub name: String,
-    pub handle: CommandChild
+    pub handle: CommandChild,
 }
 
 impl LAMProcess {
-    pub fn start<I, S>(    
-        shell: &Shell<Wry>,
-        name: String,
-        path: String,
-        args: I
-    ) -> LAMProcess
-    where 
+    pub fn start<I, S>(shell: &Shell<Wry>, name: String, path: String, args: I) -> LAMProcess
+    where
         I: IntoIterator<Item = S>,
-        S: AsRef<OsStr>  
+        S: AsRef<OsStr>,
     {
         println!("Starting {}...", name);
 
@@ -50,6 +48,9 @@ impl LAMProcess {
             }
         });
 
-        LAMProcess { name, handle: child }
+        LAMProcess {
+            name,
+            handle: child,
+        }
     }
 }

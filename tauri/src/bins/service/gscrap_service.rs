@@ -3,26 +3,33 @@ use std::path::PathBuf;
 use tauri::Wry;
 use tauri_plugin_shell::Shell;
 
-use crate::bins::{LAMProcess, utils::transform_abstract_path};
+use crate::bins::{utils::transform_abstract_path, LAMProcess};
 
-pub fn create_gscrap_service_process(shell: &Shell<Wry>, resource_dir: &PathBuf, ack_port: &str) -> LAMProcess {
-    let gscrap_resource = resource_dir
-        .join("bin")
-        .join("service")
-        .join("gscrap");
+pub fn create_gscrap_service_process(
+    shell: &Shell<Wry>,
+    data_dir: &PathBuf,
+    resource_dir: &PathBuf,
+    ack_port: &str,
+) -> LAMProcess {
+    let app_data_dir = data_dir.join("service").join("gscrap");
+    std::fs::create_dir_all(&app_data_dir).expect("Failed to create app data directory for gscrap service");
+
+    let gscrap_resource = resource_dir.join("bin").join("service").join("gscrap");
 
     let gscrap_bin = gscrap_resource.join("gscrap-service.exe");
     let gscrap_bin = transform_abstract_path(gscrap_bin.to_string_lossy().to_string());
 
     LAMProcess::start(
-        shell, 
-        String::from("GScrap service"), 
-        gscrap_bin, 
+        shell,
+        String::from("GScrap service"),
+        gscrap_bin,
         [
             "--cwd",
             &transform_abstract_path(gscrap_resource.to_string_lossy().to_string()),
+            "--app-dir",
+            &transform_abstract_path(app_data_dir.to_string_lossy().to_string()),
             "--allow",
-            "0.0.0.0",
+            "127.0.0.1",
             "--node-port",
             "0",
             "--grpc-token-secret",
@@ -32,7 +39,7 @@ pub fn create_gscrap_service_process(shell: &Shell<Wry>, resource_dir: &PathBuf,
             "--ack-host",
             "127.0.0.1",
             "--ack-port",
-            ack_port
-        ]
+            ack_port,
+        ],
     )
 }

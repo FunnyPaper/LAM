@@ -3,22 +3,28 @@ use std::sync::{Arc, Mutex};
 use tokio::sync::watch;
 
 use crate::bins::LAMProcess;
+use tokio_util::sync::CancellationToken;
 
 #[derive(Clone)]
 pub enum AppStatus {
     Loading,
     Ready(String),
-    Error(String)
+    Error(String),
 }
 
 pub struct LAMState {
     pub processes: Arc<Mutex<Vec<LAMProcess>>>,
-    pub status_rx: watch::Receiver<AppStatus>
+    pub token: CancellationToken,
+    pub status_rx: watch::Receiver<AppStatus>,
 }
 
 impl LAMState {
-    pub fn new(mutex: Arc<Mutex<Vec<LAMProcess>>>, rx: watch::Receiver<AppStatus>) -> LAMState {
-        LAMState { processes: mutex, status_rx: rx }
+    pub fn new(mutex: Arc<Mutex<Vec<LAMProcess>>>, token: CancellationToken, rx: watch::Receiver<AppStatus>) -> LAMState {
+        LAMState {
+            processes: mutex,
+            token: token,
+            status_rx: rx,
+        }
     }
 }
 

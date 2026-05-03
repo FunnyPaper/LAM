@@ -1,6 +1,6 @@
 import { ScriptVersionResource } from "@lam/frontend";
 import { useMemo } from "react";
-import { useGetOneScriptVersion } from "../hooks/api/script-versions/get-one.script-version.hook";
+import { ScriptVersionStatusEnum, useGetOneScriptVersion } from "../hooks/api/script-versions/get-one.script-version.hook";
 import { useGetAllScriptVersion } from "../hooks/api/script-versions/get-all.script-version.hook";
 import { useForkScriptVersion } from "../hooks/api/script-versions/fork.script-version.hook";
 import { usePublishScriptVersion } from "../hooks/api/script-versions/publish.script-version.hook";
@@ -27,7 +27,7 @@ export function useScriptVersionResource(): ScriptVersionResource {
                 page: (params?.page ?? 0) + 1
             },
             filtering: {
-                ...(params?.filter?.status && { status: params.filter.status }),
+                ...(params?.filter?.status && { status: params.filter.status as ScriptVersionStatusEnum }),
                 ...(params?.filter?.format && { source: { format: params.filter.format }}),
                 ...(params?.filter?.engineVersion != null && { content: { engineVersion: params.filter.engineVersion }})
             },

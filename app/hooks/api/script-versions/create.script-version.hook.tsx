@@ -17,7 +17,7 @@ export type CreateScriptVersionDto = {
 export function useCreateScriptVersion() {
     return useMutation({
         mutationFn: async ({ scriptId, ...options }: CreateScriptVersionDto) => {
-            const { data } = await api.post(
+            const { data } = await api.post<{ id: string }>(
                 `/scripts/${scriptId}/versions`,
                 options
             );

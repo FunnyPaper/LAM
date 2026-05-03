@@ -1,16 +1,24 @@
 mod bins;
-mod utils;
 mod commands;
+mod utils;
 
 use core::panic;
-use std::{sync::{Arc, Mutex}};
+use std::sync::{Arc, Mutex};
 
-use tauri::{AppHandle, Manager, RunEvent, State};
+use tauri::{AppHandle, Manager, RunEvent, State, WindowEvent};
 use tauri_plugin_shell::ShellExt;
-use tokio::{io::{AsyncReadExt, AsyncWriteExt}, net::TcpListener, sync::watch};
+use tokio::{
+    io::{AsyncReadExt, AsyncWriteExt},
+    net::TcpListener,
+    sync::watch,
+};
 use tokio_util::sync::CancellationToken;
 
-use crate::{bins::LAMProcess, commands::initialize, utils::{AppStatus, LAMState, kill_all_processes}};
+use crate::{
+    bins::LAMProcess,
+    commands::{initialize, shutdown},
+    utils::{kill_all_processes, AppStatus, LAMState},
+};
 
 async fn create_subprocesses(app: AppHandle, tx: watch::Sender<AppStatus>) {
     let state: State<LAMState> = app.state();
@@ -19,18 +27,26 @@ async fn create_subprocesses(app: AppHandle, tx: watch::Sender<AppStatus>) {
         .resource_dir()
         .expect("Failed to resolve resource dir.");
 
-    let listener = TcpListener::bind("127.0.0.1:0").await.expect("Could not bind port.");
+    let app_data_dir = app.path().app_data_dir().expect("Failed to resolve app data dir");
+
+    let listener = TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("Could not bind port.");
     let main_port = listener.local_addr().unwrap().port();
 
     let gscrap_process = bins::create_gscrap_service_process(
         &app.shell(), 
-        &resource_dir,
+        &app_data_dir, 
+        &resource_dir, 
         &main_port.to_string()
     );
 
     let (mut socket1, _addr1) = listener.accept().await.expect("Could not accept socket 1.");
     let mut buf1 = [0; 1024];
-    let n = socket1.read(&mut buf1).await.expect("Error reading process.");
+    let n = socket1
+        .read(&mut buf1)
+        .await
+        .expect("Error reading process.");
     let _ = socket1.shutdown().await;
     let grpc_port: String = String::from_utf8_lossy(&buf1[..n])
         .trim()
@@ -41,14 +57,18 @@ async fn create_subprocesses(app: AppHandle, tx: watch::Sender<AppStatus>) {
 
     let backend_proceess = bins::create_backend_process(
         &app.shell(),
+        &app_data_dir,
         &resource_dir,
         &grpc_port.to_string(),
-        &main_port.to_string()
+        &main_port.to_string(),
     );
 
     let (mut socket2, _addr2) = listener.accept().await.expect("Could not accept socket 2.");
     let mut buf2 = [0; 1024];
-    let n = socket2.read(&mut buf2).await.expect("Error reading process.");
+    let n = socket2
+        .read(&mut buf2)
+        .await
+        .expect("Error reading process.");
     let _ = socket2.shutdown().await;
     let backend_port: String = String::from_utf8_lossy(&buf2[..n])
         .trim()
@@ -94,10 +114,12 @@ pub fn run() {
     let (tx, rx) = watch::channel(AppStatus::Loading);
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![initialize])
-        .manage(LAMState::new(processes.clone(), rx))
+        .invoke_handler(tauri::generate_handler![initialize, shutdown])
+        .manage(LAMState::new(processes.clone(), token.clone(), rx))
         .setup(move |app| {
             let app_handle = app.app_handle().clone();
             let token_for_task = token_for_setup.clone();
@@ -112,8 +134,13 @@ pub fn run() {
                     }
                 }
             });
-            
+
             Ok(())
+        })
+        .on_window_event(|_, e| {
+          if let WindowEvent::Resized(_) = e {
+            std::thread::sleep(std::time::Duration::from_nanos(1))
+          }
         })
         .build(tauri::generate_context!())
         .expect("Error while building tauri application.")
@@ -122,6 +149,6 @@ pub fn run() {
                 println!("Tauri app is closing. Cleaning...");
                 token.cancel();
                 kill_all_processes(&processes);
-            } 
+            }
         })
 }

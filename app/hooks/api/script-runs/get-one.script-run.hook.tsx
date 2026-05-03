@@ -48,7 +48,7 @@ export type ScriptRunDto = {
         data: Record<string, any>;
     };
     result: {
-        data?: Record<string, any>;
+        data?: Record<string, any>[];
         createdAt: string;
         updatedAt: string;
     };

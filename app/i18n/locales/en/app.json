@@ -1,0 +1,20 @@
+{
+  "titleBar": {
+    "checkUpdate": "Check update"
+  },
+  "updater": {
+    "noNewVersion": "You are using the newest version of the application.",
+    "serverConnectionError": "Could not connect to the updater server.",
+    "couldNotDownload": "Could not download files.",
+    "criticalError": "Critical installation error."
+  },
+  "updateManager": {
+    "title": "Update Manager",
+    "updateFound": "New update found",
+    "downloading": "Downloading in progress...",
+    "updateDownloaded": "Update downloaded. Application will restart in order to install the update.",
+    "maybeLater": "Maybe later",
+    "startDownloading": "Start downloading",
+    "install": "Install"
+  }
+}

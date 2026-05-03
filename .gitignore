@@ -140,3 +140,6 @@ vite.config.ts.timestamp-*
 
 *.sqlite3
 *.sqlite
+
+# monaco assets
+public/assets/*worker*.js

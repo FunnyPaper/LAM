@@ -1,0 +1,67 @@
+name: "Publish Release"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish-tauri:
+    permissions:
+      contents: write
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.4.0
+          cache: "npm"
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install backend and server dependencies
+        run: npm run install:dependencies
+
+      - name: Patch packages
+        run: |
+          cd ./packages/gscrap/service/
+          npx patch-package
+
+      - name: Install main project
+        run: npm install
+
+      - name: Build dependencies
+        run: npx lam --build service:gscrap backend frontend
+
+      - name: Setup monaco
+        run: npx lam --monaco
+
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "LAM ${{ github.ref_name }}"
+          releaseBody: "Automaticaly generated release ${{ github.ref_name }}."
+          releaseDraft: true
+          prerelease: false
+          args: --target x86_64-pc-windows-msvc --bundles msi
+
+      - name: Generate latest.json
+        run: node scripts/generate-latest-json.js
+
+      - name: Upload latest.json
+        uses: softprops/action-gh-release@v2
+        with:
+          files: latest.json
+          tag_name: ${{ github.ref_name }}

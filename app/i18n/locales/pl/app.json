@@ -1,0 +1,20 @@
+{
+  "titleBar": {
+    "checkUpdate": "Sprawdź aktualizacje"
+  },
+  "updater": {
+    "noNewVersion": "Używasz najnowszej wersji aplikacji.",
+    "serverConnectionError": "Nie można połączyć się z serwerem aktualizacji.",
+    "couldNotDownload": "Nie udało się pobrać plików.",
+    "criticalError": "Krytyczny błąd instalacji."
+  },
+  "updateManager": {
+    "title": "Menedżer aktualizacji",
+    "updateFound": "Znaleziono nową aktualizację",
+    "downloading": "Trwa pobieranie...",
+    "updateDownloaded": "Aktualizacja została pobrana. Aplikacja zostanie uruchomiona ponownie, aby zainstalować aktualizację.",
+    "maybeLater": "Może później",
+    "startDownloading": "Rozpocznij pobieranie",
+    "install": "Zainstaluj"
+  }
+}

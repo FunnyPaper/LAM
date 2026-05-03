@@ -1,7 +1,7 @@
 {
     "name": "lam",
     "private": true,
-    "version": "0.2.0",
+    "version": "0.3.0",
     "workspaces": [
         "packages/lam/frontend"
     ],
@@ -10,12 +10,12 @@
         "build": "tsc && vite build",
         "preview": "vite preview",
         "tauri": "tauri",
-        "install:backend": "npm --prefix ./packages/lam/backend install && npm --prefix ./packages/gscrap/service/packages/gscrap install && npm --prefix ./packages/gscrap/service install",
+        "install:dependencies": "npm --prefix ./packages/lam/backend install && npm --prefix ./packages/gscrap/service install",
         "gen:proto": "npm --prefix ./packages/lam/backend run gen:proto && npm --prefix ./packages/gscrap/service run gen:proto",
-        "build:services": "npm --prefix ./packages/gscrap/service/packages/gscrap run build && cd ./packages/gscrap/service && sh ./create-installer.sh",
-        "build:backend": "cd ./packages/lam/backend && sh ./create-installator.sh",
+        "build:services": "npm --prefix ./packages/gscrap/service/packages/gscrap run build && cd ./packages/gscrap/service && node scripts/create-installer.js",
+        "build:backend": "cd ./packages/lam/backend && node scripts/create-installer.js",
         "build:frontend": "npm --prefix ./packages/lam/frontend run build",
-        "build:dependencies": "npm run build:services && npm run build:backend && npm run build:frontend && sh ./prep-subapps.sh",
+        "build:dependencies": "npm run build:services && npm run build:backend && npm run build:frontend",
         "prune:dev": "npm --prefix ./packages/lam/backend prune --omit=dev && npm --prefix ./packages/gscrap/service/packages/gscrap prune --omit=dev && npm --prefix ./packages/gscrap/service prune --omit=dev"
     },
     "dependencies": {
@@ -26,9 +26,11 @@
         "@mui/icons-material": "7.3.x",
         "@mui/material": "7.3.x",
         "@tanstack/react-query": "^5.99.0",
-        "@tauri-apps/api": "^2",
+        "@tauri-apps/api": "^2.10.1",
         "@tauri-apps/plugin-opener": "^2",
+        "@tauri-apps/plugin-process": "^2.3.1",
         "@tauri-apps/plugin-shell": "^2.3.5",
+        "@tauri-apps/plugin-updater": "^2.10.1",
         "@xyflow/react": "12.10.x",
         "axios": "^1.15.0",
         "class-validator": "0.14.x",
@@ -51,6 +53,11 @@
         "@vitejs/plugin-react": "^4.6.0",
         "esbuild": "^0.27.3",
         "typescript": "5.9.x",
-        "vite": "7.2.x"
+        "vite": "7.2.x",
+        "vite-plugin-monaco-editor": "^1.1.0",
+        "yargs": "18.0.0"
+    },
+    "bin": {
+        "lam": "./scripts/lam.js"
     }
 }
