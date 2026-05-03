@@ -7,10 +7,13 @@ on:
 
 jobs:
   publish-tauri:
+    strategy:
+      matrix:
+        node: [24.4.0]
     permissions:
       contents: write
     runs-on: windows-latest
-
+    name: Build os-windows-latest node-version-${{ matrix.node }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24.4.0
+          node-version: ${{ matrix.node }}
           cache: "npm"
 
       - name: Install Rust toolchain
@@ -28,6 +31,20 @@ jobs:
 
       - name: Install backend and server dependencies
         run: npm run install:dependencies
+
+      - name: Install makensis
+        run: |
+          choco install nsis -y
+          echo "C:\Program Files (x86)\NSIS" >> $GITHUB_PATH
+
+      - name: Cache Nexe compiled Node.js
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\.nexe
+            C:\Users\runneradmin\.nexe
+          key: ${{ runner.os }}-nexe-${{ matrix.node }}
+          restore-keys: ${{ runner.os }}-nexe
 
       - name: Patch packages
         run: |
