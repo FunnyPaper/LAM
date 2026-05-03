@@ -12,8 +12,8 @@
         "tauri": "tauri",
         "install:dependencies": "npm --prefix ./packages/lam/backend install && npm --prefix ./packages/gscrap/service install",
         "gen:proto": "npm --prefix ./packages/lam/backend run gen:proto && npm --prefix ./packages/gscrap/service run gen:proto",
-        "build:services": "npm --prefix ./packages/gscrap/service/packages/gscrap run build && cd ./packages/gscrap/service && node scripts/create-installer.js",
-        "build:backend": "cd ./packages/lam/backend && node scripts/create-installer.js",
+        "build:services": "npm --prefix ./packages/gscrap/service/packages/gscrap run build && cd ./packages/gscrap/service && node scripts/create-exe.js",
+        "build:backend": "cd ./packages/lam/backend && node scripts/create-exe.js",
         "build:frontend": "npm --prefix ./packages/lam/frontend run build",
         "build:dependencies": "npm run build:services && npm run build:backend && npm run build:frontend",
         "prune:dev": "npm --prefix ./packages/lam/backend prune --omit=dev && npm --prefix ./packages/gscrap/service/packages/gscrap prune --omit=dev && npm --prefix ./packages/gscrap/service prune --omit=dev"

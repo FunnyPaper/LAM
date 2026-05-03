@@ -32,11 +32,6 @@ jobs:
       - name: Install backend and server dependencies
         run: npm run install:dependencies
 
-      - name: Install makensis
-        run: |
-          choco install nsis -y
-          echo "C:\Program Files (x86)\NSIS" >> $GITHUB_PATH
-
       - name: Cache Nexe compiled Node.js
         uses: actions/cache@v4
         with:
