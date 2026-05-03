@@ -26,7 +26,7 @@
         "@mui/icons-material": "7.3.x",
         "@mui/material": "7.3.x",
         "@tanstack/react-query": "^5.99.0",
-        "@tauri-apps/api": "^2.10.1",
+        "@tauri-apps/api": "2.11.0",
         "@tauri-apps/plugin-opener": "^2",
         "@tauri-apps/plugin-process": "^2.3.1",
         "@tauri-apps/plugin-shell": "^2.3.5",

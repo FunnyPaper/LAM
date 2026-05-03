@@ -9,7 +9,7 @@ jobs:
   publish-tauri:
     strategy:
       matrix:
-        node: [24.4.0]
+        node: [ 24.4.0 ]
     permissions:
       contents: write
     runs-on: windows-latest
@@ -36,7 +36,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ~\.nexe
+            ~/.nexe
             C:\Users\runneradmin\.nexe
           key: ${{ runner.os }}-nexe-${{ matrix.node }}
           restore-keys: ${{ runner.os }}-nexe
@@ -67,10 +67,7 @@ jobs:
           releaseBody: "Automaticaly generated release ${{ github.ref_name }}."
           releaseDraft: true
           prerelease: false
-          args: --target x86_64-pc-windows-msvc --bundles msi
-
-      - name: Generate latest.json
-        run: node scripts/generate-latest-json.js
+          args: --target x86_64-pc-windows-msvc --bundles nsis
 
       - name: Upload latest.json
         uses: softprops/action-gh-release@v2
