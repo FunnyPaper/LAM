@@ -12,8 +12,8 @@ jobs:
         node: [ 24.4.0 ]
     permissions:
       contents: write
-    runs-on: windows-latest
-    name: Build os-windows-latest node-version-${{ matrix.node }}
+    runs-on: windows-2022
+    name: Build os-windows-2022 node-version-${{ matrix.node }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,6 +28,12 @@ jobs:
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Install NASM (Windows)
+        shell: powershell
+        run: |
+          choco install nasm
+          "C:\Program Files\NASM" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Install backend and server dependencies
         run: npm run install:dependencies
@@ -45,6 +51,13 @@ jobs:
         run: |
           cd ./packages/gscrap/service/
           npx patch-package
+
+      - name: Create mandatory env files
+        run: |
+          touch .env.web
+          touch .env.desktop
+          echo "VITE_ENTRY=main.web.tsx" > .env.web
+          echo "VITE_ENTRY=main.desktop.tsx" > .env.desktop
 
       - name: Install main project
         run: npm install

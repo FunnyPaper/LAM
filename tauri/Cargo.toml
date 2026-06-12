@@ -1,6 +1,6 @@
 [package]
 name = "lam"
-version = "0.3.2"
+version = "0.3.3"
 description = "LAM"
 authors = ["FunnyPaper"]
 edition = "2021"
