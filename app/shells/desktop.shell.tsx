@@ -1,5 +1,5 @@
 import { App } from '@lam/frontend';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Alert, Box, Snackbar } from '@mui/material';
 import { invoke } from '@tauri-apps/api/core';
 import { TitleBar } from '../components/title.bar';
@@ -55,20 +55,27 @@ export function DesktopShell() {
     })
   }, [setBaseUrl, storeLogout, refreshToken])
 
+  const drawerContainerRef = useRef<HTMLElement>(null);
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
       <TitleBar onCheckUpdate={checkForUpdate} />
 
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        placeItems: 'center',
-        flex: 1,
-        minHeight: 0,
-        overflow: 'hidden'
-      }}>
+      <Box
+        ref={drawerContainerRef}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          placeItems: 'center',
+          flex: 1,
+          minHeight: 0,
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
         <App
           authState={authState}
+          drawerContainerRef={drawerContainerRef}
           apiProviders={{
             auth: authResource,
             user: usersResource,

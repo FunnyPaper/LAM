@@ -1,7 +1,7 @@
 {
     "name": "lam",
     "private": true,
-    "version": "0.3.2",
+    "version": "0.3.3",
     "workspaces": [
         "packages/lam/frontend"
     ],
@@ -18,7 +18,8 @@
         "build:backend": "cd ./packages/lam/backend && node scripts/create-exe.js",
         "build:frontend": "npm --prefix ./packages/lam/frontend run build",
         "build:dependencies": "npm run build:services && npm run build:backend && npm run build:frontend",
-        "prune:dev": "npm --prefix ./packages/lam/backend prune --omit=dev && npm --prefix ./packages/gscrap/service/packages/gscrap prune --omit=dev && npm --prefix ./packages/gscrap/service prune --omit=dev"
+        "prune:dev": "npm --prefix ./packages/lam/backend prune --omit=dev && npm --prefix ./packages/gscrap/service/packages/gscrap prune --omit=dev && npm --prefix ./packages/gscrap/service prune --omit=dev",
+        "setup": "npm run install:dependencies && cd ./packages/gscrap/service/ && npx patch-package && cd ../../../ && npm install && npx lam --build service:gscrap backend frontend && npx lam --monaco"
     },
     "dependencies": {
         "@emotion/react": "11.14.x",
