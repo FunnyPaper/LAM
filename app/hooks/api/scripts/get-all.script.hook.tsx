@@ -31,10 +31,10 @@ export type GetAllScriptDtoQueryParams = {
 export function useGetAllScripts() {
     const queryClient = useQueryClient();
 
-    const dataSourceProvider = useCallback((queryParams: GetAllScriptDtoQueryParams) => 
+    const dataSourceProvider = useCallback((queryParams: GetAllScriptDtoQueryParams) =>
         createQueryDataSource<Paginated<ScriptDto>>({
             queryClient,
-            queryKey: ['scripts'],
+            queryKey: ['scripts', queryParams],
             endpoint: 'scripts',
             queryParams: queryParams
         }),

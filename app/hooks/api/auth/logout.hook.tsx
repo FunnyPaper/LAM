@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../../api/axios";
 import { useAuthStore } from "../../../stores/auth.store";
 
@@ -7,8 +7,11 @@ export type LoginDto = {
     password: string;
 }
 
+const PROFILE_QUERY_KEY = ['users', 'me'];
+
 export function useLogout() {
     const logout = useAuthStore(state => state.logout);
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async () => {
@@ -16,6 +19,9 @@ export function useLogout() {
 
             return data;
         },
-        onSuccess: () => logout()
+        onSuccess: () => {
+            queryClient.removeQueries({ queryKey: PROFILE_QUERY_KEY });
+            logout();
+        }
     })
 }

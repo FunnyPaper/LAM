@@ -15,8 +15,11 @@ import { useScriptResource } from '../resources/scripts.resource.hook';
 import { useUsersResource } from '../resources/users.resource.hook';
 import { useAuthStore } from '../stores/auth.store';
 import { useBackendConfigStore } from '../stores/backend-config.store';
+import { useAuthProfileSync } from '../hooks/api/users/auth-profile-sync.hook';
 
 export function DesktopShell() {
+  useAuthProfileSync();
+
   const authResource = useAuthResource();
   const usersResource = useUsersResource();
   const envsResource = useEnvsResource();

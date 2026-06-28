@@ -29,10 +29,10 @@ export type GetAllEnvDtoQueryParams = {
 export function useGetAllEnvs() {
     const queryClient = useQueryClient();
 
-    const dataSourceProvider = useCallback((queryParams: GetAllEnvDtoQueryParams) => 
+    const dataSourceProvider = useCallback((queryParams: GetAllEnvDtoQueryParams) =>
         createQueryDataSource<Paginated<EnvDto>>({
             queryClient,
-            queryKey: ['users', 'me', 'envs'],
+            queryKey: ['users', 'me', 'envs', queryParams],
             endpoint: 'users/me/envs',
             queryParams: queryParams
         }),

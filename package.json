@@ -1,7 +1,7 @@
 {
     "name": "lam",
     "private": true,
-    "version": "0.3.3",
+    "version": "0.3.4",
     "workspaces": [
         "packages/lam/frontend"
     ],
@@ -22,6 +22,7 @@
         "setup": "npm run install:dependencies && cd ./packages/gscrap/service/ && npx patch-package && cd ../../../ && npm install && npx lam --build service:gscrap backend frontend && npx lam --monaco"
     },
     "dependencies": {
+        "@ebay/nice-modal-react": "1.2.x",
         "@emotion/react": "11.14.x",
         "@emotion/styled": "11.14.x",
         "@fontsource/roboto": "5.2.x",

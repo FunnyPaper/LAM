@@ -58,13 +58,13 @@ export type GetAllScriptVersionDtoQueryParams = {
 export function useGetAllScriptVersion() {
     const queryClient = useQueryClient();
 
-    const dataSourceProvider = useCallback((scriptId: string, queryParams: GetAllScriptVersionDtoQueryParams) => 
+    const dataSourceProvider = useCallback((scriptId: string, queryParams: GetAllScriptVersionDtoQueryParams) =>
         createQueryDataSource<Paginated<ScriptVersionDto>>({
             queryClient,
-            queryKey: ['scripts', scriptId, "versions"],
+            queryKey: ['scripts', scriptId, "versions", queryParams],
             endpoint: `scripts/${scriptId}/versions`,
             queryParams: queryParams
-        }), 
+        }),
     []);
 
     return dataSourceProvider;

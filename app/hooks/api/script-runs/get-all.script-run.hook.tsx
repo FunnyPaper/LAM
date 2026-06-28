@@ -80,13 +80,13 @@ export type GetAllScriptRunsDtoQueryParams = {
 export function useGetAllScriptRuns() {
     const queryClient = useQueryClient();
 
-    const dataSourceProvider = useCallback((queryParams: GetAllScriptRunsDtoQueryParams) => 
+    const dataSourceProvider = useCallback((queryParams: GetAllScriptRunsDtoQueryParams) =>
         createQueryDataSource<Paginated<ScriptRunDto>>({
             queryClient,
-            queryKey: ['runs'],
+            queryKey: ['runs', queryParams],
             endpoint: 'runs',
             queryParams: queryParams
-        }), 
+        }),
     []);
 
     return dataSourceProvider;
