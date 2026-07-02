@@ -45,9 +45,9 @@ export function useUpdater() {
         if (event.event === 'Started') {
           total = event.data.contentLength || 0;
         } else if (event.event === 'Progress') {
-          downloaded+= event.data.chunkLength;
+          downloaded += event.data.chunkLength;
           if (total > 0) {
-            setDownloadProgress((downloadProgress / total) * 100);
+            setDownloadProgress((downloaded / total) * 100);
           }
         }
       });
